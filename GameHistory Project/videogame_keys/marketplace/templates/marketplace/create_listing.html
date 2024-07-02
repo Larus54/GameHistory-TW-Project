@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea Annuncio</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-group .invalid-feedback {
+            display: block;
+        }
+        .form-control {
+            width: 100%;
+        }
+        .description-field {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'home'%}">GameHistory Project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'user_profile' %}">Il tuo account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'manage_offers' %}">Gestione offerte</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_listing' %}">Crea annuncio</a>
+                    </li>
+                    {% if user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-danger" href="{% url 'admin:index' %}">Admin Dashboard</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'logout' %}" class="form-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}">Login Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{% url 'signup' %}">Registrati</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Crea un Nuovo Annuncio</h1>
+        {% if messages %}
+            <div class="alert alert-info">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+            </div>
+        {% endif %}
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <h2 class="mb-3">Dettagli Annuncio</h2>
+            <div class="form-row">
+                {{ listing_form.non_field_errors }}
+                {% for field in listing_form %}
+                    <div class="form-group col-md-6">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        <script>
+                            document.getElementById('{{ field.id_for_label }}').classList.add('form-control');
+                        </script>
+                        {% if field.errors %}
+                            <div class="invalid-feedback">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <h2 class="mt-4 mb-3">Informazioni sul Gioco</h2>
+            <div class="form-row">
+                {{ game_form.non_field_errors }}
+                {% for field in game_form %}
+                    {% if field.name == 'genre' %}
+                        <div class="form-group col-md-6">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            <select id="{{ field.id_for_label }}" name="{{ field.name }}" class="form-control">
+                                <option value="" disabled selected>Select a genre</option>
+                                <option value="Action">Action</option>
+                                <option value="Adventure">Adventure</option>
+                                <option value="RPG">RPG</option>
+                                <option value="Simulation">Simulation</option>
+                                <option value="Strategy">Strategy</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Puzzle">Puzzle</option>
+                                <option value="Shooter">Shooter</option>
+                            </select>
+                            {% if field.errors %}
+                                <div class="invalid-feedback">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% elif field.name != 'description' %}
+                        <div class="form-group col-md-6">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            <script>
+                                document.getElementById('{{ field.id_for_label }}').classList.add('form-control');
+                            </script>
+                            {% if field.errors %}
+                                <div class="invalid-feedback">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="form-group col-md-12">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            <script>
+                                document.getElementById('{{ field.id_for_label }}').classList.add('form-control', 'description-field');
+                            </script>
+                            {% if field.errors %}
+                                <div class="invalid-feedback">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}         
+            </div>       
+            <button type="submit" class="btn btn-primary">Crea Annuncio</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
