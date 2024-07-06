@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        .flex-grow-1 {
+            flex-grow: 1;
+        }
+        .description-box {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .registration-container {
+            display: flex;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+        .registration-form, .description-box {
+            flex: 0 0 48%;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            padding: 10px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'home'%}">GameHistory Project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'user_profile' %}">Il tuo account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'manage_offers' %}">Gestione offerte</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_listing' %}">Crea annuncio</a>
+                    </li>
+                    {% if user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-danger" href="{% url 'admin:index' %}">Admin Dashboard</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'logout' %}" class="form-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}">Login Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{% url 'signup' %}">Registrati</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container mt-5 flex-grow-1">
+        <div class="registration-container">
+            <div class="registration-form">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4 text-center">Registrazione</h2>
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ form.username.label_tag }}
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                    <div class="alert alert-danger mt-2">
+                                        {% for error in form.username.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.password1.label_tag }}
+                                {{ form.password1 }}
+                                {% if form.password1.errors %}
+                                    <div class="alert alert-danger mt-2">
+                                        {% for error in form.password1.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.password2.label_tag }}
+                                {{ form.password2 }}
+                                {% if form.password2.errors %}
+                                    <div class="alert alert-danger mt-2">
+                                        {% for error in form.password2.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Registrati</button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'login' %}">Possiedi già un account?</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="description-box">
+                <h2 class="text-center">Benvenuti su GameHistory Project!</h2>
+                <p>
+                    GameHistory Project è la piattaforma definitiva per gli appassionati di videogiochi. Registrandoti, avrai accesso a una serie di vantaggi esclusivi:
+                </p>
+                <ul>
+                    <li><strong>Crea e gestisci annunci</strong>: Vendi e scambia i tuoi giochi con facilità.</li>
+                    <li><strong>Gestione delle offerte</strong>: Tieni traccia delle offerte ricevute e accettale con un clic.</li>
+                    <li><strong>Recensioni</strong>: Lascia recensioni sui venditori e guadagna reputazione all'interno della community.</li>
+                    <li><strong>Dashboard amministrativa</strong>: Se sei un admin, avrai accesso a strumenti avanzati per gestire il sito.</li>
+                </ul>
+                <p>
+                    La nostra missione è creare una community sicura e affidabile dove gli appassionati di videogiochi possano incontrarsi, scambiare e vendere i loro giochi preferiti. Unisciti a noi oggi e inizia la tua avventura!
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <p>&copy; 2024 GameHistory Project. Tutti i diritti riservati.</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
