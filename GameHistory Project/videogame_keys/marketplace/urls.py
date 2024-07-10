@@ -21,5 +21,5 @@ urlpatterns = [
     path('listing/<int:listing_id>/offer/', views.create_offer, name='create_offer'),
     path('manage_offers/', views.manage_offers, name='manage_offers'),
     path('offer/<int:offer_id>/<str:response>/', views.respond_to_offer, name='respond_to_offer'),
-
+    path('listing/<int:listing_id>/modify', views.edit_listing, name='edit_listing'),
 ]

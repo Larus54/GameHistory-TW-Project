@@ -22,15 +22,56 @@ def home(request):
     return render(request, 'marketplace/home.html', context)
 
 @login_required
+def edit_listing(request, listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
+    game = listing.game
+
+    if request.user != listing.user:
+        messages.error(request, "Non è il tuo annuncio!")
+        return redirect('home')
+
+    if request.method == 'POST':
+        listing_form = ListingForm(request.POST, request.FILES, instance=listing)
+        game_form = GameForm(request.POST, request.FILES, instance=game)
+
+        if listing_form.is_valid() and game_form.is_valid():
+            game_instance = game_form.save()
+            listing_instance = listing_form.save(commit=False)
+            listing_instance.game = game_instance
+            listing_instance.user = request.user
+
+            if listing_instance.price > 0:
+                listing_instance.save()
+                messages.success(request, "Annuncio modificato con successo!")
+                return redirect('listing_detail', listing_id=listing.id)
+            else:
+                messages.error(request, "Non è possibile avere un prezzo negativo!")
+    
+    else:
+        listing_form = ListingForm(instance=listing)
+        game_form = GameForm(instance=game)
+
+    return render(request, 'marketplace/edit_listing.html', {
+        'listing' : listing,
+        'listing_form': listing_form,
+        'game_form': game_form,
+    })
+
+
+@login_required
 def add_review(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
     seller = listing.user
-
     # Controlla se l'utente sta cercando di recensire se stesso
     if request.user == seller:
         messages.error(request, "Non puoi fare una recensione a te stesso.")
         return redirect('listing_detail', listing_id=listing.id)
 
+
+    existing_review = Review.objects.filter(user_id=request.user.id, seller_id=seller.id).first()
+    if existing_review:
+        messages.success(request, "Hai già recensito il venditore")
+        return redirect('listing_detail', listing_id=listing.id)
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
@@ -255,6 +296,9 @@ def add_quantity(request, listing_id):
 @login_required
 def create_offer(request, listing_id):
     listing = get_object_or_404(Listing, id=listing_id)
+    if listing.user_id == request.user.id:
+        return redirect('listing_detail', listing_id=listing.id)
+
     if request.method == 'POST':
         form = OfferForm(request.POST, listing=listing)
         if form.is_valid():
@@ -295,7 +339,7 @@ def generate_game_key(): # generatore per la chiave fittizia
 
 @login_required
 def respond_to_offer(request, offer_id, response):
-    offer = Offer.objects.get(id=offer_id)
+    offer = get_object_or_404(Offer, id=offer_id)
     listing = offer.listing
     if response == 'accept' and listing.quantity > 0:
         offer.accepted = True

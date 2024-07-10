@@ -40,6 +40,15 @@
             width: 100%;
             margin-top: auto;
         }   
+        .centered-title {
+            text-align: center; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+            font-size: 38px; 
+            padding: 0 10px;
+        }
+        
     </style>
 </head>
 <body>
@@ -87,11 +96,11 @@
     </nav>
 
     <div class="container mt-5">
-        <center><h1 class="mb-4">🆕 Crea un Nuovo Annuncio 🆕</h1></center>
+        <h1 class="centered-title mb-4">🔧 Modifica dell'annuncio: {{ listing.game.title }} 🔧</h1>
         <div class="description-box">
             <center><p>
-                In questa sezione é possibile creare il tuo annuncio che comparirà nell'homepage di tutti gli utenti di GameHistory Project!<br>
-                ⚠️<b>ATTENZIONE:</b> Ricordatevi di rispettare tutte le regole degli annunci, il mancato rispetto delle regole potrebbe portare ad un <b>ban</b> del profilo! ⚠️
+                Sei in modalità modifica!<br>
+                ⚠️<b>ATTENZIONE:</b> Qualunque modifica effettuata non potrà essere modificata! ⚠️
             </p></center>
         </div>
         {% if messages %}
@@ -103,7 +112,7 @@
         {% endif %}
         <form method="post" class="needs-validation" novalidate>
             {% csrf_token %}
-            <center><h2 class="mb-3">🔎Dettagli Annuncio🔎</h2></center>
+            <center><h2 class="mb-3">🔎Modifica dell'Annuncio🔎</h2></center>
             <div class="form-row">
                 {{ listing_form.non_field_errors }}
                 {% for field in listing_form %}
@@ -209,7 +218,7 @@
                     {% endif %}
                 {% endfor %}         
             </div>       
-            <button type="submit" class="btn btn-primary">Crea Annuncio</button>
+            <button type="submit" class="btn btn-warning btn-block" style="font-size: 20px; width: 50%; margin: 0 auto; display: block;">Modifica Annuncio</button>
         </form>
     </div>
     &nbsp;

@@ -48,7 +48,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
+    'marketplace.middleware.handle_405',
+    'marketplace.middleware.NotFoundMiddleware',
+    'marketplace.middleware.ForbiddenMiddleware'
 ]
 
 ROOT_URLCONF = 'videogame_keys.urls'

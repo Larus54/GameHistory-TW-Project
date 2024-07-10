@@ -91,7 +91,7 @@
                     {% if messages %}
                         <div class="alert alert-info">
                         {% for message in messages %}
-                            <p>{{ message }}</p>
+                            <center><p>{{ message }}</p></center>
                         {% endfor %}
                 </div>
                     {% endif %}
@@ -129,6 +129,7 @@
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-danger">Cancella Annuncio</button>
                             </form>
+                            <a href="{% url 'edit_listing' listing.id %}" class="btn btn-warning">Modifica Annuncio</a>
                         {% else %}
                             {% if user.is_authenticated %}
                                 <div class="btn-group mt-2">
@@ -186,6 +187,7 @@
             </div>
         </div>
     </div>
+    &nbsp;
     <footer class="footer">
         <p>&copy; 2024 GameHistory Project. Tutti i diritti riservati.</p>
     </footer>

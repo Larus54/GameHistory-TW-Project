@@ -92,6 +92,7 @@
         
         <center><h3>Offerte sui tuoi annunci</h3></center>
         <ul class="list-group">
+        {% if offer_as_seller%}
             {% for offer in offers_as_seller %}
                 <li class="list-group-item">
                     <p>Offerta: {{ offer.offer_price }} € di {{ offer.user.username }} per {{ offer.listing.game.title }}</p>
@@ -110,11 +111,17 @@
                     {% endif %}
                 </li>
             {% endfor %}
+        {% else %}
+            <div class="alert alert-warning">
+                <center><p>Nessuna offerta su i tuoi annunci al momento</p></center>
+            </div>
+        {% endif %}
         </ul>
         &nbsp;
         &nbsp;
         <center><h3>Le tue offerte</h3></center>
         <ul class="list-group">
+        {% if offers_as_buyer %}
             {% for offer in offers_as_buyer %}
                 <li class="list-group-item">
                     <p>Offerta: {{ offer.offer_price }} € per {{ offer.listing.game.title }}</p>
@@ -129,6 +136,11 @@
                     </p>
                 </li>
             {% endfor %}
+        {% else %}
+            <div class="alert alert-warning">
+                <p>Non hai fatto nessuna offerta al momento</p>
+            </div>  
+        {% endif %}
         </ul>
     </div>
     &nbsp;
